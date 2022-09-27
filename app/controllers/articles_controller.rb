@@ -1,39 +1,29 @@
 class ArticlesController < ApplicationController
   def index
-    @articles = Article.all
+    render json: Article.all.order(:id).map, &:resource
   end
 
   def show
-    @article = Article.find(params[:id])
-  end
-
-  def new
-    @article = Article.new
-    @back_path = articles_path
+    render json: Article.find(params[:id]).resource
   end
 
   def create
     @article = Article.new(article_params)
 
     if @article.save
-      redirect_to @article
+      render json: @article.resource, status: :created
     else
-      render :new, status: :unprocessable_entity
+      render_error_json(@article.errors.messages.keys, @article.errors.messages.values.flatten, :unprocessable_entity)
     end
-  end
-
-  def edit
-    @article = Article.find(params[:id])
-    @back_path = @article
   end
 
   def update
     @article = Article.find(params[:id])
 
     if @article.update(article_params)
-      redirect_to @article
+      render json: @article.resource
     else
-      render :edit, status: :unprocessable_entity
+      render_error_json(@article.errors.messages.keys, @article.errors.messages.values.flatten, :unprocessable_entity)
     end
   end
 
@@ -41,7 +31,7 @@ class ArticlesController < ApplicationController
     @article = Article.find(params[:id])
     @article.destroy
 
-    redirect_to articles_path, status: :see_other
+    render json: {message: "deleted."}
   end
 
   private
