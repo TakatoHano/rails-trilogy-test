@@ -12,6 +12,8 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
       - ./db/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - backend
 
   web_app:
     build: .
@@ -28,7 +30,26 @@ services:
       DATABASE_PASSWORD: $DB_ROOT_PASSWORD
       DATABASE_HOST: db
       RAILS_ENV: development
+    networks:
+      - k6
+      - backend
+
+  k6:
+    image: grafana/k6:latest
+    networks:
+      - k6
+    ports:
+      - "6565:6565"
+    volumes:
+      - ./k6:/scripts
+    environment:
+      APP_HOST: web_app
+    working_dir: /scripts
 
 volumes:
   mysql-data:
     driver: local
+
+networks:
+  k6:
+  backend:

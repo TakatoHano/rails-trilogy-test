@@ -18,3 +18,9 @@ create_db:
 
 build:
 	docker compose build
+
+trancate:
+	docker compose run --rm web_app bundle exec rails  db:migrate:reset
+
+run_k6: trancate
+	docker compose run --rm k6 run http_scenario.js
