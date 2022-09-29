@@ -7,7 +7,6 @@
 default: &default
   # adapter: mysql2
   adapter: trilogy 
-  prepared_statements: false
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: <%= ENV["DATABASE_USERNAME"] %>
   password: <%= ENV["DATABASE_PASSWORD"] %>
