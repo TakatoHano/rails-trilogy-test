@@ -20,7 +20,10 @@ build:
 	docker compose build
 
 trancate:
-	docker compose run --rm web_app bundle exec rails  db:migrate:reset
+	docker compose run --rm web_app bundle exec rails  db:migrate:reset > /dev/null 2>&1
 
 run_k6: trancate
-	docker compose run --rm k6 run http_scenario.js
+	docker compose run --rm k6 run http_scenario.js 
+
+run_seeds: trancate
+	docker compose run --rm web_app bundle exec rails db:seed
